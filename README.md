@@ -19,7 +19,7 @@
 - 数据库：MySQL 8.0、Redis
 - 中间件：Maven、Tomcat
 
-### 前端技术（无前端可删掉）
+### 前端技术
 - 基础：HTML5 + CSS3 + JavaScript
 - 框架：Vue2 / Element UI
 
