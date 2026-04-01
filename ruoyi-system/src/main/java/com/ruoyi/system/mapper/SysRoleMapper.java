@@ -49,6 +49,8 @@ public interface SysRoleMapper
      */
     public SysRole selectRoleById(Long roleId);
 
+    public SysRole selectRoleByKey(String roleKey);
+
     /**
      * 根据用户ID查询角色
      * 

@@ -1,5 +1,8 @@
 package com.ruoyi.web.controller.common;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -8,10 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.common.constant.Constants;
@@ -159,5 +160,23 @@ public class CommonController
         {
             log.error("下载文件失败", e);
         }
+    }
+
+    @GetMapping("/image/{imageName}")
+    public ResponseEntity<byte[]> getImage(@PathVariable String imageName) {
+        File imageFile = new File(RuoYiConfig.getUploadPath() + imageName); // 指定本地图片目录
+        if (!imageFile.exists()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        byte[] imageBytes = new byte[0];
+        try {
+            imageBytes = Files.readAllBytes(imageFile.toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG) // 指定图片类型
+                .body(imageBytes);
     }
 }

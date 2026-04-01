@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysHouseMapper">
+
+    <resultMap type="SysHouse" id="SysHouseResult">
+        <result property="houseId" column="house_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="name" column="name"/>
+        <result property="address" column="address"/>
+        <result property="infrastructure" column="infrastructure"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="area" column="area"/>
+        <result property="maxPerson" column="max_person"/>
+        <result property="price" column="price"/>
+        <result property="description" column="description"/>
+        <result property="rentStatus" column="rent_status"/>
+        <result property="houseStatus" column="house_status"/>
+        <result property="password" column="password"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectSysHouseVo">
+        select house_id, user_id, name, address, infrastructure, image_url, area, max_person, price, description, rent_status, house_status, password, del_flag, create_by, create_time, update_by, update_time from sys_house
+    </sql>
+
+    <select id="selectSysHouseList" parameterType="SysHouse" resultMap="SysHouseResult">
+        <include refid="selectSysHouseVo"/>
+        <where>
+            del_flag = 0
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="address != null  and address != ''">and address = #{address}</if>
+            <if test="infrastructure != null  and infrastructure != ''">and infrastructure = #{infrastructure}</if>
+            <if test="imageUrl != null  and imageUrl != ''">and image_url = #{imageUrl}</if>
+            <if test="area != null ">and area = #{area}</if>
+            <if test="maxPerson != null ">and max_person = #{maxPerson}</if>
+            <if test="price != null ">and price = #{price}</if>
+            <if test="description != null  and description != ''">and description = #{description}</if>
+            <if test="rentStatus != null ">and rent_status = #{rentStatus}</if>
+            <if test="houseStatus != null ">and house_status = #{houseStatus}</if>
+            <if test="password != null  and password != ''">and password = #{password}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectSysHouseByHouseId" parameterType="Long" resultMap="SysHouseResult">
+        <include refid="selectSysHouseVo"/>
+        where house_id = #{houseId} and del_flag = 0
+    </select>
+
+    <select id="selectRentableSysHouseList" parameterType="SysHouseVo" resultMap="SysHouseResult">
+        <include refid="selectSysHouseVo"/>
+        where rent_status = 1 and del_flag = 0
+        <if test="keyword!=null and keyword!=''">
+            and (
+            name like concat('%',#{keyword},'%')
+            or
+            address like concat('%',#{keyword},'%')
+            or
+            description like concat('%',#{keyword},'%')
+            )
+        </if>
+        <if test="userId != null ">and user_id = #{userId}</if>
+        <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
+        <if test="address != null  and address != ''">and address = #{address}</if>
+        <if test="infrastructure != null  and infrastructure != ''">
+            <foreach item="item" index="index" collection="infrastructure.split(',')" open="" separator="" close="">
+                and FIND_IN_SET(#{item}, infrastructure)
+            </foreach>
+        </if>
+        <if test="imageUrl != null  and imageUrl != ''">and image_url = #{imageUrl}</if>
+        <if test="area != null ">and area = #{area}</if>
+        <if test="minArea != null ">and area <![CDATA[ >= ]]> #{minArea}</if>
+        <if test="maxArea != null ">and area <![CDATA[ <= ]]> #{maxArea}</if>
+        <if test="maxPerson != null ">and max_person <![CDATA[ >= ]]> #{maxPerson}</if>
+        <if test="price != null ">and price = #{price}</if>
+        <if test="description != null  and description != ''">and description = #{description}</if>
+        <if test="rentStatus != null ">and rent_status = #{rentStatus}</if>
+        <if test="houseStatus != null ">and house_status = #{houseStatus}</if>
+        <if test="password != null  and password != ''">and password = #{password}</if>
+        <if test="priceOrder == null or priceOrder == ''">
+            order by create_time desc
+        </if>
+        <if test="priceOrder != null  and priceOrder == 'asc'">
+            order by price asc
+        </if>
+        <if test="priceOrder != null  and priceOrder == 'desc'">
+            order by price desc
+        </if>
+    </select>
+
+    <select id="selectSysHouseByHouseIds" parameterType="Long" resultMap="SysHouseResult">
+        <include refid="selectSysHouseVo"/>
+        where house_id in
+        <foreach item="houseId" collection="array" open="(" separator="," close=")">
+            #{houseId}
+        </foreach>
+        and del_flag = 0
+    </select>
+
+    <insert id="insertSysHouse" parameterType="SysHouse">
+        insert into sys_house
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="houseId != null">house_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="name != null">name,</if>
+            <if test="address != null">address,</if>
+            <if test="infrastructure != null">infrastructure,</if>
+            <if test="imageUrl != null">image_url,</if>
+            <if test="area != null">area,</if>
+            <if test="maxPerson != null">max_person,</if>
+            <if test="price != null">price,</if>
+            <if test="description != null">description,</if>
+            <if test="rentStatus != null">rent_status,</if>
+            <if test="houseStatus != null">house_status,</if>
+            <if test="password != null">password,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="houseId != null">#{houseId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="name != null">#{name},</if>
+            <if test="address != null">#{address},</if>
+            <if test="infrastructure != null">#{infrastructure},</if>
+            <if test="imageUrl != null">#{imageUrl},</if>
+            <if test="area != null">#{area},</if>
+            <if test="maxPerson != null">#{maxPerson},</if>
+            <if test="price != null">#{price},</if>
+            <if test="description != null">#{description},</if>
+            <if test="rentStatus != null">#{rentStatus},</if>
+            <if test="houseStatus != null">#{houseStatus},</if>
+            <if test="password != null">#{password},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSysHouse" parameterType="SysHouse">
+        update sys_house
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="infrastructure != null">infrastructure = #{infrastructure},</if>
+            <if test="imageUrl != null">image_url = #{imageUrl},</if>
+            <if test="area != null">area = #{area},</if>
+            <if test="maxPerson != null">max_person = #{maxPerson},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="rentStatus != null">rent_status = #{rentStatus},</if>
+            <if test="houseStatus != null">house_status = #{houseStatus},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where house_id = #{houseId}
+    </update>
+
+    <delete id="deleteSysHouseByHouseId" parameterType="Long">
+        update sys_house set del_flag = 2 where house_id = #{houseId}
+    </delete>
+
+    <delete id="deleteSysHouseByHouseIds" parameterType="String">
+        update sys_house set del_flag = 2 where house_id in
+        <foreach item="houseId" collection="array" open="(" separator="," close=")">
+            #{houseId}
+        </foreach>
+    </delete>
+</mapper>

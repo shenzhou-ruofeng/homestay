@@ -11,6 +11,8 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.framework.web.service.SysRegisterService;
 import com.ruoyi.system.service.ISysConfigService;
 
+import javax.validation.Valid;
+
 /**
  * 注册验证
  * 
@@ -26,7 +28,7 @@ public class SysRegisterController extends BaseController
     private ISysConfigService configService;
 
     @PostMapping("/register")
-    public AjaxResult register(@RequestBody RegisterBody user)
+    public AjaxResult register(@RequestBody @Valid RegisterBody user)
     {
         if (!("true".equals(configService.selectConfigByKey("sys.account.registerUser"))))
         {

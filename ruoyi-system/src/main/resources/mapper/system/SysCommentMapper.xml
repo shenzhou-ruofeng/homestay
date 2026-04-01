@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysCommentMapper">
+
+    <resultMap type="SysComment" id="SysCommentResult">
+        <result property="commentId"    column="comment_id"    />
+        <result property="orderItemId"    column="order_item_id"    />
+        <result property="houseId"    column="house_id"    />
+        <result property="serviceId"    column="service_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="type"    column="type"    />
+        <result property="content"    column="content"    />
+        <result property="score"    column="score"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysCommentVo">
+        select comment_id, order_item_id, house_id, service_id, user_id, type, content, score, del_flag, create_by, create_time, update_by, update_time from sys_comment
+    </sql>
+
+    <select id="selectSysCommentList" parameterType="SysComment" resultMap="SysCommentResult">
+        <include refid="selectSysCommentVo"/>
+        <where>
+            del_flag = 0
+            <if test="orderItemId != null "> and order_item_id = #{orderItemId}</if>
+            <if test="houseId != null "> and house_id = #{houseId}</if>
+            <if test="serviceId != null "> and service_id = #{serviceId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="score != null "> and score = #{score}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectSysCommentByCommentId" parameterType="Long" resultMap="SysCommentResult">
+        <include refid="selectSysCommentVo"/>
+        where comment_id = #{commentId} and del_flag = 0
+    </select>
+
+    <select id="selectSysCommentByOrderItemId" parameterType="Long" resultMap="SysCommentResult">
+        <include refid="selectSysCommentVo"/>
+        where order_item_id = #{orderItemId} and del_flag = 0
+    </select>
+
+    <insert id="insertSysComment" parameterType="SysComment" useGeneratedKeys="true" keyProperty="commentId">
+        insert into sys_comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderItemId != null">order_item_id,</if>
+            <if test="houseId != null">house_id,</if>
+            <if test="serviceId != null">service_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="type != null">type,</if>
+            <if test="content != null">content,</if>
+            <if test="score != null">score,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderItemId != null">#{orderItemId},</if>
+            <if test="houseId != null">#{houseId},</if>
+            <if test="serviceId != null">#{serviceId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="type != null">#{type},</if>
+            <if test="content != null">#{content},</if>
+            <if test="score != null">#{score},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSysComment" parameterType="SysComment">
+        update sys_comment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderItemId != null">order_item_id = #{orderItemId},</if>
+            <if test="houseId != null">house_id = #{houseId},</if>
+            <if test="serviceId != null">service_id = #{serviceId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="score != null">score = #{score},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where comment_id = #{commentId}
+    </update>
+
+    <delete id="deleteSysCommentByCommentId" parameterType="Long">
+        update sys_comment set del_flag = 2 where comment_id = #{commentId}
+    </delete>
+
+    <delete id="deleteSysCommentByCommentIds" parameterType="String">
+        update sys_comment set del_flag = 2 where comment_id in
+        <foreach item="commentId" collection="array" open="(" separator="," close=")">
+            #{commentId}
+        </foreach>
+    </delete>
+</mapper>

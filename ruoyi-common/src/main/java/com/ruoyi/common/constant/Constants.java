@@ -150,6 +150,19 @@ public class Constants
     public static final String LOOKUP_LDAPS = "ldaps:";
 
     /**
+     * 本地缓存命名空间-hxx
+     */
+    public static final String LOCAL_CACHE_NAME = "localCache";
+    /**
+     * 本地缓存管理器名称
+     */
+    public static final String CAPTCHA_CACHE_MANAGER = "captchaCacheManager";
+    public static final String REPEAT_SUBMIT_CACHE_MANAGER = "repeatSubmitCacheManager";
+    public static final String LOCK_CACHE_MANAGER = "lockCacheManager";
+    public static final String TOKEN_CACHE_MANAGER = "tokenCacheManager";
+
+
+    /**
      * 自动识别json对象白名单配置（仅允许解析的包名，范围越小越安全）
      */
     public static final String[] JSON_WHITELIST_STR = { "org.springframework", "com.ruoyi" };

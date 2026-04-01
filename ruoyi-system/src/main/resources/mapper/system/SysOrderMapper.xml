@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysOrderMapper">
+
+    <resultMap type="SysOrder" id="SysOrderResult">
+        <result property="orderId"    column="order_id"    />
+        <result property="houseId"    column="house_id"    />
+        <result property="landlordUserId"    column="landlord_user_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="price"    column="price"    />
+        <result property="arrivalDate"    column="arrival_date"    />
+        <result property="departureDate"    column="departure_date"    />
+        <result property="tenantInfo"    column="tenant_info"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysOrderVo">
+        select order_id, house_id, landlord_user_id, user_id, price, arrival_date, departure_date, tenant_info, status, del_flag, create_by, create_time, update_by, update_time from sys_order
+    </sql>
+
+    <select id="selectSysOrderList" parameterType="SysOrder" resultMap="SysOrderResult">
+        <include refid="selectSysOrderVo"/>
+        <where>
+            del_flag = 0
+            <if test="houseId != null "> and house_id = #{houseId}</if>
+            <if test="landlordUserId != null "> and landlord_user_id = #{landlordUserId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="price != null "> and price = #{price}</if>
+            <if test="arrivalDate != null "> and arrival_date = #{arrivalDate}</if>
+            <if test="departureDate != null "> and departure_date = #{departureDate}</if>
+            <if test="tenantInfo != null  and tenantInfo != ''"> and tenant_info = #{tenantInfo}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectSysOrderListByOrderVo" parameterType="SysOrderVo" resultMap="SysOrderResult">
+        <include refid="selectSysOrderVo"/>
+        <where>
+            del_flag = 0
+            <if test="landlordUserId != null "> and landlord_user_id = #{landlordUserId}</if>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="price != null ">and price = #{price}</if>
+            <if test="arrivalDate != null ">and arrival_date = #{arrivalDate}</if>
+            <if test="departureDate != null ">and departure_date = #{departureDate}</if>
+            <if test="tenantInfo != null  and tenantInfo != ''">and tenant_info = #{tenantInfo}</if>
+            <if test="status != null ">and status = #{status}</if>
+            <if test="startDate != null and endDate != null">
+                and
+                (
+                (arrival_date <![CDATA[ >= ]]> #{startDate} and arrival_date <![CDATA[ < ]]> #{endDate})
+                or
+                (departure_date <![CDATA[ > ]]> #{startDate} and departure_date <![CDATA[ <= ]]> #{endDate})
+                )
+            </if>
+            <if test="statusList != null ">
+                and status in
+                <foreach item="item" collection="statusList" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectSysOrderByOrderId" parameterType="Long" resultMap="SysOrderResult">
+        <include refid="selectSysOrderVo"/>
+        where order_id = #{orderId} and del_flag = 0
+    </select>
+
+    <insert id="insertSysOrder" parameterType="SysOrder" useGeneratedKeys="true" keyProperty="orderId">
+        insert into sys_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="houseId != null">house_id,</if>
+            <if test="landlordUserId != null">landlord_user_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="price != null">price,</if>
+            <if test="arrivalDate != null">arrival_date,</if>
+            <if test="departureDate != null">departure_date,</if>
+            <if test="tenantInfo != null">tenant_info,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="houseId != null">#{houseId},</if>
+            <if test="landlordUserId != null">#{landlordUserId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="price != null">#{price},</if>
+            <if test="arrivalDate != null">#{arrivalDate},</if>
+            <if test="departureDate != null">#{departureDate},</if>
+            <if test="tenantInfo != null">#{tenantInfo},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSysOrder" parameterType="SysOrder">
+        update sys_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="houseId != null">house_id = #{houseId},</if>
+            <if test="landlordUserId != null">landlord_user_id = #{landlordUserId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="arrivalDate != null">arrival_date = #{arrivalDate},</if>
+            <if test="departureDate != null">departure_date = #{departureDate},</if>
+            <if test="tenantInfo != null">tenant_info = #{tenantInfo},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where order_id = #{orderId}
+    </update>
+
+    <delete id="deleteSysOrderByOrderId" parameterType="Long">
+        update sys_order set del_flag = 2 where order_id = #{orderId}
+    </delete>
+
+    <delete id="deleteSysOrderByOrderIds" parameterType="String">
+        update sys_order set del_flag = 2 where order_id in
+        <foreach item="orderId" collection="array" open="(" separator="," close=")">
+            #{orderId}
+        </foreach>
+    </delete>
+</mapper>

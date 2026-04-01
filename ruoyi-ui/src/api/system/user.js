@@ -9,6 +9,14 @@ export function listUser(query) {
     params: query
   })
 }
+// 根据角色查询用户列表
+export function listByRole(query) {
+  return request({
+    url: '/system/user/listByRole',
+    method: 'get',
+    params: query
+  })
+}
 
 // 查询用户详细
 export function getUser(userId) {

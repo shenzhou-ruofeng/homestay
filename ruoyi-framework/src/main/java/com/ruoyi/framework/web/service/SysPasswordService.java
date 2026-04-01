@@ -1,6 +1,8 @@
 package com.ruoyi.framework.web.service;
 
 import java.util.concurrent.TimeUnit;
+
+import com.ruoyi.common.constant.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -62,7 +64,7 @@ public class SysPasswordService
         if (!matches(user, password))
         {
             retryCount = retryCount + 1;
-            redisCache.setCacheObject(getCacheKey(username), retryCount, lockTime, TimeUnit.MINUTES);
+            redisCache.setCacheObject(getCacheKey(username), retryCount, Constants.LOCK_CACHE_MANAGER);
             throw new UserPasswordNotMatchException();
         }
         else

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysContractMapper">
+
+    <resultMap type="SysContract" id="SysContractResult">
+        <result property="contractId"    column="contract_id"    />
+        <result property="houseId"    column="house_id"    />
+        <result property="houseAddress"    column="house_address"    />
+        <result property="userId"    column="user_id"    />
+        <result property="landlordName"    column="landlord_name"    />
+        <result property="landlordIdcard"    column="landlord_idcard"    />
+        <result property="landlordPhone"    column="landlord_phone"    />
+        <result property="landlordAddress"    column="landlord_address"    />
+        <result property="platformName"    column="platform_name"    />
+        <result property="platformAddress"    column="platform_address"    />
+        <result property="platformLegalName"    column="platform_legal_name"    />
+        <result property="platformPhone"    column="platform_phone"    />
+        <result property="status"    column="status"    />
+        <result property="signingDate"    column="signing_date"    />
+        <result property="submitDate"    column="submit_date"    />
+        <result property="terminateDate"    column="terminate_date"    />
+        <result property="errMsg"    column="err_msg"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <resultMap type="SysContractVo" id="SysContractResultVo">
+        <result property="contractId"    column="contract_id"    />
+        <result property="houseId"    column="house_id"    />
+        <result property="houseAddress"    column="house_address"    />
+        <result property="houseName"    column="house_name"    />
+        <result property="userId"    column="user_id"    />
+        <result property="landlordName"    column="landlord_name"    />
+        <result property="landlordIdcard"    column="landlord_idcard"    />
+        <result property="landlordPhone"    column="landlord_phone"    />
+        <result property="landlordAddress"    column="landlord_address"    />
+        <result property="platformName"    column="platform_name"    />
+        <result property="platformAddress"    column="platform_address"    />
+        <result property="platformLegalName"    column="platform_legal_name"    />
+        <result property="platformPhone"    column="platform_phone"    />
+        <result property="status"    column="status"    />
+        <result property="signingDate"    column="signing_date"    />
+        <result property="submitDate"    column="submit_date"    />
+        <result property="terminateDate"    column="terminate_date"    />
+        <result property="errMsg"    column="err_msg"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysContractVo">
+        select contract_id, house_id, house_address, user_id, landlord_name, landlord_idcard, landlord_phone, landlord_address, platform_name, platform_address, platform_legal_name, platform_phone, status, signing_date, submit_date, terminate_date, err_msg, del_flag, create_by, create_time, update_by, update_time from sys_contract
+    </sql>
+
+    <select id="selectSysContractList" parameterType="SysContract" resultMap="SysContractResultVo">
+        select b.name as house_name, a.contract_id, a.house_id, a.house_address, a.user_id, a.landlord_name, a.landlord_idcard, a.landlord_phone, a.landlord_address, a.platform_name, a.platform_address, a.platform_legal_name, a.platform_phone, a.status, a.signing_date, a.submit_date, a.terminate_date, a.err_msg, a.del_flag, a.create_by, a.create_time, a.update_by, a.update_time
+        from sys_contract a left join sys_house b on a.house_id=b.house_id and b.del_flag=0
+        <where>
+            a.del_flag = 0
+            <if test="houseId != null "> and a.house_id = #{houseId}</if>
+            <if test="houseAddress != null  and houseAddress != ''"> and a.house_address = #{houseAddress}</if>
+            <if test="userId != null "> and a.user_id = #{userId}</if>
+            <if test="landlordName != null  and landlordName != ''"> and a.landlord_name like concat('%', #{landlordName}, '%')</if>
+            <if test="landlordIdcard != null  and landlordIdcard != ''"> and a.landlord_idcard = #{landlordIdcard}</if>
+            <if test="landlordPhone != null  and landlordPhone != ''"> and a.landlord_phone = #{landlordPhone}</if>
+            <if test="landlordAddress != null  and landlordAddress != ''"> and a.landlord_address = #{landlordAddress}</if>
+            <if test="platformName != null  and platformName != ''"> and a.platform_name like concat('%', #{platformName}, '%')</if>
+            <if test="platformAddress != null  and platformAddress != ''"> and a.platform_address = #{platformAddress}</if>
+            <if test="platformLegalName != null  and platformLegalName != ''"> and a.platform_legal_name like concat('%', #{platformLegalName}, '%')</if>
+            <if test="platformPhone != null  and platformPhone != ''"> and a.platform_phone = #{platformPhone}</if>
+            <if test="status != null "> and a.status = #{status}</if>
+            <if test="signingDate != null "> and a.signing_date = #{signingDate}</if>
+            <if test="submitDate != null "> and a.submit_date = #{submitDate}</if>
+            <if test="terminateDate != null "> and a.terminate_date = #{terminateDate}</if>
+            <if test="errMsg != null  and errMsg != ''"> and a.err_msg = #{errMsg}</if>
+        </where>
+        order by a.create_time desc
+    </select>
+
+    <select id="selectSysContractByContractId" parameterType="Long" resultMap="SysContractResult">
+        <include refid="selectSysContractVo"/>
+        where contract_id = #{contractId} and del_flag = 0
+    </select>
+
+    <insert id="insertSysContract" parameterType="SysContract" useGeneratedKeys="true" keyProperty="contractId">
+        insert into sys_contract
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="houseId != null">house_id,</if>
+            <if test="houseAddress != null">house_address,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="landlordName != null">landlord_name,</if>
+            <if test="landlordIdcard != null">landlord_idcard,</if>
+            <if test="landlordPhone != null">landlord_phone,</if>
+            <if test="landlordAddress != null">landlord_address,</if>
+            <if test="platformName != null">platform_name,</if>
+            <if test="platformAddress != null">platform_address,</if>
+            <if test="platformLegalName != null">platform_legal_name,</if>
+            <if test="platformPhone != null">platform_phone,</if>
+            <if test="status != null">status,</if>
+            <if test="signingDate != null">signing_date,</if>
+            <if test="submitDate != null">submit_date,</if>
+            <if test="terminateDate != null">terminate_date,</if>
+            <if test="errMsg != null">err_msg,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="houseId != null">#{houseId},</if>
+            <if test="houseAddress != null">#{houseAddress},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="landlordName != null">#{landlordName},</if>
+            <if test="landlordIdcard != null">#{landlordIdcard},</if>
+            <if test="landlordPhone != null">#{landlordPhone},</if>
+            <if test="landlordAddress != null">#{landlordAddress},</if>
+            <if test="platformName != null">#{platformName},</if>
+            <if test="platformAddress != null">#{platformAddress},</if>
+            <if test="platformLegalName != null">#{platformLegalName},</if>
+            <if test="platformPhone != null">#{platformPhone},</if>
+            <if test="status != null">#{status},</if>
+            <if test="signingDate != null">#{signingDate},</if>
+            <if test="submitDate != null">#{submitDate},</if>
+            <if test="terminateDate != null">#{terminateDate},</if>
+            <if test="errMsg != null">#{errMsg},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSysContract" parameterType="SysContract">
+        update sys_contract
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="houseId != null">house_id = #{houseId},</if>
+            <if test="houseAddress != null">house_address = #{houseAddress},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="landlordName != null">landlord_name = #{landlordName},</if>
+            <if test="landlordIdcard != null">landlord_idcard = #{landlordIdcard},</if>
+            <if test="landlordPhone != null">landlord_phone = #{landlordPhone},</if>
+            <if test="landlordAddress != null">landlord_address = #{landlordAddress},</if>
+            <if test="platformName != null">platform_name = #{platformName},</if>
+            <if test="platformAddress != null">platform_address = #{platformAddress},</if>
+            <if test="platformLegalName != null">platform_legal_name = #{platformLegalName},</if>
+            <if test="platformPhone != null">platform_phone = #{platformPhone},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="signingDate != null">signing_date = #{signingDate},</if>
+            <if test="submitDate != null">submit_date = #{submitDate},</if>
+            <if test="terminateDate != null">terminate_date = #{terminateDate},</if>
+            <if test="errMsg != null">err_msg = #{errMsg},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where contract_id = #{contractId}
+    </update>
+
+    <delete id="deleteSysContractByContractId" parameterType="Long">
+        update sys_contract set del_flag = 2 where contract_id = #{contractId}
+    </delete>
+
+    <delete id="deleteSysContractByContractIds" parameterType="String">
+        update sys_contract set del_flag = 2 where contract_id in
+        <foreach item="contractId" collection="array" open="(" separator="," close=")">
+            #{contractId}
+        </foreach>
+    </delete>
+</mapper>

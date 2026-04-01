@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysServiceMapper">
+    
+    <resultMap type="SysService" id="SysServiceResult">
+        <result property="serviceId"    column="service_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="houseId"    column="house_id"    />
+        <result property="name"    column="name"    />
+        <result property="price"    column="price"    />
+        <result property="description"    column="description"    />
+        <result property="cost"    column="cost"    />
+        <result property="remain"    column="remain"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysServiceVo">
+        select service_id, user_id, house_id, name, price, description, cost, remain, del_flag, create_by, create_time, update_by, update_time from sys_service
+    </sql>
+
+    <select id="selectSysServiceList" parameterType="SysService" resultMap="SysServiceResult">
+        <include refid="selectSysServiceVo"/>
+        <where>
+        del_flag = 0
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="houseId != null "> and house_id = #{houseId}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="price != null "> and price = #{price}</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="cost != null "> and cost = #{cost}</if>
+            <if test="remain != null "> and remain = #{remain}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysServiceByServiceId" parameterType="Long" resultMap="SysServiceResult">
+        <include refid="selectSysServiceVo"/>
+        where service_id = #{serviceId} and del_flag = 0
+    </select>
+        
+    <insert id="insertSysService" parameterType="SysService" useGeneratedKeys="true" keyProperty="serviceId">
+        insert into sys_service
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="houseId != null">house_id,</if>
+            <if test="name != null">name,</if>
+            <if test="price != null">price,</if>
+            <if test="description != null">description,</if>
+            <if test="cost != null">cost,</if>
+            <if test="remain != null">remain,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="houseId != null">#{houseId},</if>
+            <if test="name != null">#{name},</if>
+            <if test="price != null">#{price},</if>
+            <if test="description != null">#{description},</if>
+            <if test="cost != null">#{cost},</if>
+            <if test="remain != null">#{remain},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysService" parameterType="SysService">
+        update sys_service
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="houseId != null">house_id = #{houseId},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="cost != null">cost = #{cost},</if>
+            <if test="remain != null">remain = #{remain},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where service_id = #{serviceId}
+        order by create_time desc
+    </update>
+
+    <delete id="deleteSysServiceByServiceId" parameterType="Long">
+        update sys_service set del_flag = 2 where service_id = #{serviceId}
+    </delete>
+
+    <delete id="deleteSysServiceByServiceIds" parameterType="String">
+        update sys_service set del_flag = 2 where service_id in
+        <foreach item="serviceId" collection="array" open="(" separator="," close=")">
+            #{serviceId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysRepairMapper">
+
+    <resultMap type="SysRepair" id="SysRepairResult">
+        <result property="repairId"    column="repair_id"    />
+        <result property="landlordUserId"    column="landlord_user_id"    />
+        <result property="houseId"    column="house_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="description"    column="description"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysRepairVo">
+        select repair_id, landlord_user_id, house_id, user_id, description, status, del_flag, create_by, create_time, update_by, update_time from sys_repair
+    </sql>
+
+    <select id="selectSysRepairList" parameterType="SysRepair" resultMap="SysRepairResult">
+        <include refid="selectSysRepairVo"/>
+        <where>
+            del_flag = 0
+            <if test="landlordUserId != null "> and landlord_user_id = #{landlordUserId}</if>
+            <if test="houseId != null "> and house_id = #{houseId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectSysRepairByRepairId" parameterType="Long" resultMap="SysRepairResult">
+        <include refid="selectSysRepairVo"/>
+        where repair_id = #{repairId} and del_flag = 0
+    </select>
+
+    <insert id="insertSysRepair" parameterType="SysRepair" useGeneratedKeys="true" keyProperty="repairId">
+        insert into sys_repair
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="landlordUserId != null">landlord_user_id,</if>
+            <if test="houseId != null">house_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="description != null">description,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="landlordUserId != null">#{landlordUserId},</if>
+            <if test="houseId != null">#{houseId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="description != null">#{description},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSysRepair" parameterType="SysRepair">
+        update sys_repair
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="landlordUserId != null">landlord_user_id = #{landlordUserId},</if>
+            <if test="houseId != null">house_id = #{houseId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where repair_id = #{repairId}
+    </update>
+
+    <delete id="deleteSysRepairByRepairId" parameterType="Long">
+        update sys_repair set del_flag = 2 where repair_id = #{repairId}
+    </delete>
+
+    <delete id="deleteSysRepairByRepairIds" parameterType="String">
+        update sys_repair set del_flag = 2 where repair_id in
+        <foreach item="repairId" collection="array" open="(" separator="," close=")">
+            #{repairId}
+        </foreach>
+    </delete>
+</mapper>
